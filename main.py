@@ -157,7 +157,7 @@ def death():
 
 
 screen = pygame.display.set_mode((1920, 1080), pygame.FULLSCREEN)
-myFont = pygame.font.Font('JetBrainsMono-Regular.w', 45)
+myFont = pygame.font.Font('JetBrainsMono-Regular.ttf', 45)
 clock = pygame.time.Clock()
 board_s = pygame.Surface((1152, 1080))
 cell = pygame.image.load('cell.png').convert()
