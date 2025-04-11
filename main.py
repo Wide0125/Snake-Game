@@ -20,7 +20,7 @@ for i in range(len(snake)):
         board[snake[i][1]][snake[i][0]] = 1
 high_score = int(input())
 frame_rate = 120
-move_frame = 24
+move_frame = 12
 move_distance = 72 // move_frame
 
 
