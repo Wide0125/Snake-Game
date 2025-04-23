@@ -1,29 +1,22 @@
-import pygame
-
-pygame.init()
-from random import randint
+import pygame # pygame library (https://www.pygame.org/)
+pygame.init() # initialize pygame
+from random import randint # for placement of apple
 import sys
 
-sys.stdin = open('High Score.txt', 'r')
+sys.stdin = open("High Score.txt", "r") # access high score saved to file
 
-SL = 3
-snake = [[7, 7], [6, 7], [5, 7]]
-prev_snake = [[6, 7], [5, 7], [4, 7]]
-head_dir = 'East'
-curr_dir = 'East'
-tail_dir = 'West'
-board = [[0] * 16 for _ in range(15)]
-for i in range(len(snake)):
-    if i == 0:
-        board[snake[i][1]][snake[i][0]] = 2
-    else:
-        board[snake[i][1]][snake[i][0]] = 1
+# initialize variables and grid
+snake_length = 3
+snake = [[7, 7], [6, 7], [5, 7]] # location of snake starting from head
+prev_snake = [[6, 7], [5, 7], [4, 7]] # location of snake during previous move frame
+head_dir = "East" # direction to change snake head to at the next possible move frame
+curr_dir = "East" # actual direction of snake head at any given moment
 high_score = int(input())
-frame_rate = 120
-move_frame = 12
-move_distance = 72 // move_frame
+framerate = 144
+move_frame = 18 # set to move every nth frame (must be set to common divisor of frame_rate and move_distance)
+move_distance = 72 // move_frame # distance to move every frame
 
-
+# place apple on random location that isn't part of snake
 def apple(snake):
     apple = snake[0].copy()
     while apple in snake:
@@ -31,19 +24,17 @@ def apple(snake):
         apple[1] = randint(0, 14)
     return apple
 
+# initialize apple
+apple_location = [13, 7]
 
-AL = [13, 7]
-prev_AL = AL.copy()
-
-
+# take in snake as parameter and add 1 length to its tail
 def eat(snake):
-    global SL
-    global AL
-    global prev_AL
-    SL += 1
-    x = snake[-1][0] + (snake[-1][0] - snake[-2][0])
-    y = snake[-1][1] + (snake[-1][1] - snake[-2][1])
-    if x > 15:
+    global snake_length
+    global apple_location
+    snake_length += 1
+    x = snake[-1][0] + (snake[-1][0] - snake[-2][0]) # set x coordinate of the additional body
+    y = snake[-1][1] + (snake[-1][1] - snake[-2][1]) # set y coordinate of the additional body
+    if x > 15: # logic to place body somewhere else if position of additional body points to out of grid
         x -= 1
         if y == 0:
             y += 1
@@ -68,131 +59,120 @@ def eat(snake):
         else:
             x -= 1
     snake.append([x, y])
-    AL = apple(snake)
+    apple_location = apple(snake) # place new apple
 
-
+# move snake towards its current direction
 def move(dir):
-    global curr_dir
-    global prev_AL
-    if dir == 'North':
-        prev_location = [snake[0][0], snake[0][1] - 1]
-        curr_dir = 'North'
-        if prev_location[1] < 0:
+    if dir == "North": # move head towards direction
+        move_to = [snake[0][0], snake[0][1] - 1]
+        if move_to[1] < 0: # check for out of board
             death()
-    if dir == 'South':
-        prev_location = [snake[0][0], snake[0][1] + 1]
-        curr_dir = 'South'
-        if prev_location[1] > 14:
+    if dir == "South":
+        move_to = [snake[0][0], snake[0][1] + 1]
+        if move_to[1] > 14:
             death()
-    if dir == 'East':
-        prev_location = [snake[0][0] + 1, snake[0][1]]
-        curr_dir = 'East'
-        if prev_location[0] > 15:
+    if dir == "East":
+        move_to = [snake[0][0] + 1, snake[0][1]]
+        if move_to[0] > 15:
             death()
-    if dir == 'West':
-        prev_location = [snake[0][0] - 1, snake[0][1]]
-        curr_dir = 'West'
-        if prev_location[0] < 0:
+    if dir == "West":
+        move_to = [snake[0][0] - 1, snake[0][1]]
+        if move_to[0] < 0:
             death()
-    for i in range(len(snake)):
-        if prev_location in snake:
+    for i in range(len(snake)): # make rest of body follow head movement
+        if move_to in snake: # check for body collision
             death()
         temp = snake[i]
-        snake[i] = prev_location
-        prev_location = temp
-    for j in range(len(snake)):
-        if j == 0:
-            board[snake[j][1]][snake[j][0]] = 2
-        else:
-            board[snake[j][1]][snake[j][0]] = 1
-    board[prev_location[1]][prev_location[0]] = 0
-    prev_AL = AL.copy()
-    if snake[0][0] == AL[0] and snake[0][1] == AL[1]:
+        snake[i] = move_to
+        move_to = temp
+    if snake[0] == apple_location: # check for apple eaten
         eat(snake)
 
 
-def draw(frame, dir):
-    prev_dir = dir
-    board_s.fill((0, 0, 0))
-    for x in range(1080 // 15):
-        for y in range(1080 // 15):
-            board_s.blit(cell, (x * 72, y * 72))
-    board_s.blit(apple_s, (prev_AL[0] * 72 + 3, prev_AL[1] * 72 + 3))
-    for i in range(len(prev_snake)):
-        if prev_dir == 'East':
+def draw(frame, dir): # draw board, snake, and apple onto pygame surface object and return it
+    board_s = grid_s.copy() # intializes board surface from grid surface
+    board_s.blit(apple_s, (apple_location[0] * 72 + 3, apple_location[1] * 72 + 3)) # draw apple
+    distance_times_frame = move_distance * (frame % move_frame)
+    for i in range(len(prev_snake)): # draw snake based on current direction and in-between (move) frame
+        if dir == "East":
             if i == 0:
-                board_s.blit(snake_head, (prev_snake[i][0] * 72 + 3 + (move_distance * (frame % move_frame)), prev_snake[i][1] * 72 + 3))
+                board_s.blit(snake_head, (prev_snake[i][0] * 72 + 3 + (distance_times_frame), prev_snake[i][1] * 72 + 3))
             else:
-                board_s.blit(snake_body, (prev_snake[i][0] * 72 + 3 + (move_distance * (frame % move_frame)), prev_snake[i][1] * 72 + 3))
-        elif prev_dir == 'West':
+                board_s.blit(snake_body, (prev_snake[i][0] * 72 + 3 + (distance_times_frame), prev_snake[i][1] * 72 + 3))
+        elif dir == "West":
             if i == 0:
-                board_s.blit(snake_head, (prev_snake[i][0] * 72 + 3 - (move_distance * (frame % move_frame)), prev_snake[i][1] * 72 + 3))
+                board_s.blit(snake_head, (prev_snake[i][0] * 72 + 3 - (distance_times_frame), prev_snake[i][1] * 72 + 3))
             else:
-                board_s.blit(snake_body, (prev_snake[i][0] * 72 + 3 - (move_distance * (frame % move_frame)), prev_snake[i][1] * 72 + 3))
-        elif prev_dir == 'North':
+                board_s.blit(snake_body, (prev_snake[i][0] * 72 + 3 - (distance_times_frame), prev_snake[i][1] * 72 + 3))
+        elif dir == "North":
             if i == 0:
-                board_s.blit(snake_head, (prev_snake[i][0] * 72 + 3, prev_snake[i][1] * 72 + 3 - (move_distance * (frame % move_frame))))
+                board_s.blit(snake_head, (prev_snake[i][0] * 72 + 3, prev_snake[i][1] * 72 + 3 - (distance_times_frame)))
             else:
-                board_s.blit(snake_body, (prev_snake[i][0] * 72 + 3, prev_snake[i][1] * 72 + 3 - (move_distance * (frame % move_frame))))
-        elif prev_dir == 'South':
+                board_s.blit(snake_body, (prev_snake[i][0] * 72 + 3, prev_snake[i][1] * 72 + 3 - (distance_times_frame)))
+        elif dir == "South":
             if i == 0:
-                board_s.blit(snake_head, (prev_snake[i][0] * 72 + 3, prev_snake[i][1] * 72 + 3 + (move_distance * (frame % move_frame))))
+                board_s.blit(snake_head, (prev_snake[i][0] * 72 + 3, prev_snake[i][1] * 72 + 3 + (distance_times_frame)))
             else:
-                board_s.blit(snake_body, (prev_snake[i][0] * 72 + 3, prev_snake[i][1] * 72 + 3 + (move_distance * (frame % move_frame))))
-        if prev_snake[i][0] - prev_snake[min(len(prev_snake) - 1, i + 1)][0] > 0:
-            prev_dir = 'East'
+                board_s.blit(snake_body, (prev_snake[i][0] * 72 + 3, prev_snake[i][1] * 72 + 3 + (distance_times_frame)))
+        
+        if prev_snake[i][0] - prev_snake[min(len(prev_snake) - 1, i + 1)][0] > 0: # set direction to move next part of body to
+            dir = "East"
         elif prev_snake[i][0] - prev_snake[min(len(prev_snake) - 1, i + 1)][0] < 0:
-            prev_dir = 'West'
+            dir = "West"
         elif prev_snake[i][1] - prev_snake[min(len(prev_snake) - 1, i + 1)][1] > 0:
-            prev_dir = 'South'
+            dir = "South"
         elif prev_snake[i][1] - prev_snake[min(len(prev_snake) - 1, i + 1)][1] < 0:
-            prev_dir = 'North'
+            dir = "North"
+    return board_s
 
-
+# saves high score to file and triggers program exit
 def death():
-    sys.stdout = open('High Score.txt', 'w')
-    print(max(high_score, SL - 3))
+    sys.stdout = open("High Score.txt", "w")
+    print(max(high_score, snake_length - 3))
     pygame.quit()
     raise SystemExit
 
-
+# initialize screen space and sprites
 screen = pygame.display.set_mode((1920, 1080), pygame.FULLSCREEN)
-myFont = pygame.font.Font('JetBrainsMono-Regular.ttf', 45)
+jetbrains_mono = pygame.font.Font("JetBrainsMono-Regular.ttf", 45)
 clock = pygame.time.Clock()
-board_s = pygame.Surface((1152, 1080))
-cell = pygame.image.load('cell.png').convert()
-snake_body = pygame.image.load('snake.png').convert()
-snake_head = pygame.image.load('snake_head.png').convert()
-blank = pygame.image.load('blank.png').convert()
-apple_s = pygame.image.load('apple.png').convert()
+cell = pygame.image.load("cell.png").convert()
+grid_s = pygame.Surface((1152, 1080))
+for x in range(1080 // 15):
+        for y in range(1080 // 15):
+            grid_s.blit(cell, (x * 72, y * 72))
+snake_body = pygame.image.load("snake.png").convert()
+snake_head = pygame.image.load("snake_head.png").convert()
+apple_s = pygame.image.load("apple.png").convert()
 
+# main game loop
 frame_count = 0
 while True:
     frame_count += 1
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_w] and curr_dir != 'South':
-        head_dir = 'North'
-    if keys[pygame.K_a] and curr_dir != 'East':
-        head_dir = 'West'
-    if keys[pygame.K_d] and curr_dir != 'West':
-        head_dir = 'East'
-    if keys[pygame.K_s] and curr_dir != 'North':
-        head_dir = 'South'
+    keys = pygame.key.get_pressed() # change direction based on keyboard input
+    if keys[pygame.K_w] and curr_dir != "South":
+        head_dir = "North"
+    if keys[pygame.K_a] and curr_dir != "East":
+        head_dir = "West"
+    if keys[pygame.K_d] and curr_dir != "West":
+        head_dir = "East"
+    if keys[pygame.K_s] and curr_dir != "North":
+        head_dir = "South"
     if keys[pygame.K_ESCAPE]:
         death()
-    score = myFont.render("Score: " + str(SL - 3), True, (255, 255, 255))
-    high_score_text = myFont.render("High Score: " + str(high_score), True, (255, 255, 255))
-    if frame_count % move_frame == 0:
+    score = jetbrains_mono.render("Score: " + str(snake_length - 3), True, (255, 255, 255))
+    high_score_text = jetbrains_mono.render("High Score: " + str(high_score), True, (255, 255, 255))
+    if frame_count % move_frame == 0: # move snake every move_frame frames
         prev_snake = snake.copy()
         move(head_dir)
-        head_dir = curr_dir
+        curr_dir = head_dir
     screen.fill((0, 0, 0))
-    draw(frame_count, curr_dir)
-    screen.blit(board_s, (384, 0))
+    curr_board_s = draw(frame_count, curr_dir)
+    screen.blit(curr_board_s, (384, 0)) # draw board, score, and high score onto screen
     screen.blit(score, (0, 0))
     screen.blit(high_score_text, (0, 50))
-    clock.tick(frame_rate)
+    clock.tick(framerate) # pause loop for a certain amount of time to maintain framerate
     pygame.event.pump()
     pygame.display.update()
-    if frame_count == frame_rate:
+    if frame_count == framerate: # reset frame count once it reaches 120
         frame_count = 0
