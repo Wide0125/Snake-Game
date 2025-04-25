@@ -148,6 +148,11 @@ apple_s = pygame.image.load("apple.png").convert()
 # main game loop
 frame_count = 0
 while True:
+    screen.blit(jetbrains_mono.render("Press any key to start playing (or esc to exit).", True, (255, 255, 255)), (0, 0))
+    
+    pygame.event.pump()
+    pygame.display.update()
+while True:
     frame_count += 1
     keys = pygame.key.get_pressed() # change direction based on keyboard input
     if keys[pygame.K_w] and curr_dir != "South":
