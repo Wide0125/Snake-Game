@@ -66,22 +66,22 @@ def move(dir):
     if dir == "North": # move head towards direction
         move_to = [snake[0][0], snake[0][1] - 1]
         if move_to[1] < 0: # check for out of board
-            death()
+            death_screen()
     if dir == "South":
         move_to = [snake[0][0], snake[0][1] + 1]
         if move_to[1] > 14:
-            death()
+            death_screen()
     if dir == "East":
         move_to = [snake[0][0] + 1, snake[0][1]]
         if move_to[0] > 15:
-            death()
+            death_screen()
     if dir == "West":
         move_to = [snake[0][0] - 1, snake[0][1]]
         if move_to[0] < 0:
-            death()
+            death_screen()
     for i in range(len(snake)): # make rest of body follow head movement
         if move_to in snake: # check for body collision
-            death()
+            death_screen()
         temp = snake[i]
         snake[i] = move_to
         move_to = temp
@@ -157,7 +157,7 @@ def death_screen():
 
 frame_count = 0
 while True:
-    screen.blit(jetbrains_mono.render("Press any key to start playing (or esc to exit).", True, (255, 255, 255)), (960, 540))
+    screen.blit(jetbrains_mono.render("Press any key to start playing (or esc to exit).", True, (255, 255, 255)), (325, 540))
     keys = pygame.key.get_pressed()
     if keys[pygame.K_ESCAPE]:
         death()
@@ -178,8 +178,6 @@ while True:
         head_dir = "East"
     if keys[pygame.K_s] and curr_dir != "North":
         head_dir = "South"
-    if keys[pygame.K_ESCAPE]:
-        death()
     score = jetbrains_mono.render("Score: " + str(snake_length - 3), True, (255, 255, 255))
     high_score_text = jetbrains_mono.render("High Score: " + str(high_score), True, (255, 255, 255))
     if frame_count % move_frame == 0: # move snake every move_frame frames
