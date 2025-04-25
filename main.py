@@ -149,7 +149,11 @@ apple_s = pygame.image.load("apple.png").convert()
 frame_count = 0
 while True:
     screen.blit(jetbrains_mono.render("Press any key to start playing (or esc to exit).", True, (255, 255, 255)), (0, 0))
-    
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_ESCAPE]:
+        death()
+    elif 1 in keys:
+        break
     pygame.event.pump()
     pygame.display.update()
 while True:
