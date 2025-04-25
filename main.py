@@ -156,8 +156,9 @@ def death_screen():
         pygame.display.update()
 
 frame_count = 0
+title_width, title_height = title_instructions_text.get_size()
+screen.blit(title_instructions_text, (960 - title_width, 540 - title_height))
 while True:
-    screen.blit()
     keys = pygame.key.get_pressed()
     if keys[pygame.K_ESCAPE]:
         death()
