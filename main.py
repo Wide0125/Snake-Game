@@ -139,15 +139,6 @@ snake_body = pygame.image.load("snake.png").convert()
 snake_head = pygame.image.load("snake_head.png").convert()
 apple_s = pygame.image.load("apple.png").convert()
 
-def death_screen():
-    while True:
-        if keys[pygame.K_ESCAPE]:
-            exit()
-        elif 1 in keys:
-            break
-        pygame.event.pump()
-        pygame.display.update()
-
 frame_count = 0
 title_width, title_height = title_instructions_text.get_size()
 screen.blit(title_instructions_text, (960 - (title_width // 2), 540 - (title_height // 2)))
