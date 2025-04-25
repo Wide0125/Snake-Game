@@ -125,13 +125,6 @@ def draw(frame, dir): # draw board, snake, and apple onto pygame surface object 
             dir = "North"
     return board_s
 
-# saves high score to file and triggers program exit
-def exit():
-    sys.stdout = open("High Score.txt", "w")
-    print(max(high_score, snake_length - 3))
-    pygame.quit()
-    raise SystemExit
-
 # initialize screen space and sprites
 screen = pygame.display.set_mode((1920, 1080), pygame.FULLSCREEN)
 jetbrains_mono = pygame.font.Font("JetBrainsMono-Regular.ttf", 45)
