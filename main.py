@@ -145,10 +145,19 @@ snake_body = pygame.image.load("snake.png").convert()
 snake_head = pygame.image.load("snake_head.png").convert()
 apple_s = pygame.image.load("apple.png").convert()
 
-# main game loop
+def death_screen():
+    while True:
+        
+        if keys[pygame.K_ESCAPE]:
+            death()
+        elif 1 in keys:
+            break
+        pygame.event.pump()
+        pygame.display.update()
+
 frame_count = 0
 while True:
-    screen.blit(jetbrains_mono.render("Press any key to start playing (or esc to exit).", True, (255, 255, 255)), (0, 0))
+    screen.blit(jetbrains_mono.render("Press any key to start playing (or esc to exit).", True, (255, 255, 255)), (960, 540))
     keys = pygame.key.get_pressed()
     if keys[pygame.K_ESCAPE]:
         death()
@@ -156,6 +165,8 @@ while True:
         break
     pygame.event.pump()
     pygame.display.update()
+
+# main game loop
 while True:
     frame_count += 1
     keys = pygame.key.get_pressed() # change direction based on keyboard input
