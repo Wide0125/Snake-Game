@@ -126,7 +126,7 @@ def draw(frame, dir): # draw board, snake, and apple onto pygame surface object 
     return board_s
 
 # saves high score to file and triggers program exit
-def death():
+def exit():
     sys.stdout = open("High Score.txt", "w")
     print(max(high_score, snake_length - 3))
     pygame.quit()
@@ -149,7 +149,7 @@ apple_s = pygame.image.load("apple.png").convert()
 def death_screen():
     while True:
         if keys[pygame.K_ESCAPE]:
-            death()
+            exit()
         elif 1 in keys:
             break
         pygame.event.pump()
@@ -157,11 +157,11 @@ def death_screen():
 
 frame_count = 0
 title_width, title_height = title_instructions_text.get_size()
-screen.blit(title_instructions_text, (960 - title_width, 540 - title_height))
+screen.blit(title_instructions_text, (960 - (title_width // 2), 540 - (title_height // 2)))
 while True:
     keys = pygame.key.get_pressed()
     if keys[pygame.K_ESCAPE]:
-        death()
+        exit()
     elif 1 in keys:
         break
     pygame.event.pump()
