@@ -135,6 +135,7 @@ def death():
 # initialize screen space and sprites
 screen = pygame.display.set_mode((1920, 1080), pygame.FULLSCREEN)
 jetbrains_mono = pygame.font.Font("JetBrainsMono-Regular.ttf", 45)
+title_instructions_text = jetbrains_mono.render("Press any key to start playing (or esc to exit).", True, (255, 255, 255))
 clock = pygame.time.Clock()
 cell = pygame.image.load("cell.png").convert()
 grid_s = pygame.Surface((1152, 1080))
@@ -156,10 +157,7 @@ def death_screen():
 
 frame_count = 0
 while True:
-    # screen.blit(jetbrains_mono.render("Press any key to start playing (or esc to exit).", True, (255, 255, 255)), (325, 540))
-    title_text = jetbrains_mono.render("Press any key to start playing (or esc to exit).", True, (255, 255, 255))
-    title_text_rect = title_text.get_rect(center=(SCREEN_WIDTH/2, SCREEN_HEIGHT/2))
-    screen.blit(title_text, title_text_rect)
+    screen.blit()
     keys = pygame.key.get_pressed()
     if keys[pygame.K_ESCAPE]:
         death()
