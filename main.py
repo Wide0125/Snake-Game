@@ -1,5 +1,6 @@
 import pygame # pygame library (https://www.pygame.org/)
 pygame.init() # initialize pygame
+from time import sleep
 from random import randint # for placement of apple
 import sys
 
@@ -11,6 +12,7 @@ snake = [[7, 7], [6, 7], [5, 7]] # location of snake starting from head
 prev_snake = [[6, 7], [5, 7], [4, 7]] # location of snake during previous move frame
 head_dir = "East" # direction to change snake head to at the next possible move frame
 curr_dir = "East" # actual direction of snake head at any given moment
+apple_location = [13, 7] # initialize apple
 high_score = int(input())
 framerate = 144
 move_frame = 18 # set to move every nth frame (must be set to common divisor of frame_rate and move_distance)
@@ -23,9 +25,6 @@ def apple(snake):
         apple[0] = randint(0, 15)
         apple[1] = randint(0, 14)
     return apple
-
-# initialize apple
-apple_location = [13, 7]
 
 # take in snake as parameter and add 1 length to its tail
 def eat(snake):
@@ -66,31 +65,32 @@ def move(dir):
     if dir == "North": # move head towards direction
         move_to = [snake[0][0], snake[0][1] - 1]
         if move_to[1] < 0: # check for out of board
-            death_screen()
+            return False
     if dir == "South":
         move_to = [snake[0][0], snake[0][1] + 1]
         if move_to[1] > 14:
-            death_screen()
+            return False
     if dir == "East":
         move_to = [snake[0][0] + 1, snake[0][1]]
         if move_to[0] > 15:
-            death_screen()
+            return False
     if dir == "West":
         move_to = [snake[0][0] - 1, snake[0][1]]
         if move_to[0] < 0:
-            death_screen()
+            return False
     for i in range(len(snake)): # make rest of body follow head movement
         if move_to in snake: # check for body collision
-            death_screen()
+            return False
         temp = snake[i]
         snake[i] = move_to
         move_to = temp
     if snake[0] == apple_location: # check for apple eaten
         eat(snake)
+    return True
 
 
 def draw(frame, dir): # draw board, snake, and apple onto pygame surface object and return it
-    board_s = grid_s.copy() # intializes board surface from grid surface
+    board_s = grid_s.copy() # initializes board surface from grid surface
     board_s.blit(apple_s, (apple_location[0] * 72 + 3, apple_location[1] * 72 + 3)) # draw apple
     distance_times_frame = move_distance * (frame % move_frame)
     for i in range(len(prev_snake)): # draw snake based on current direction and in-between (move) frame
@@ -125,6 +125,23 @@ def draw(frame, dir): # draw board, snake, and apple onto pygame surface object 
             dir = "North"
     return board_s
 
+def death_screen(title):
+    if not title:
+        dead_text = jetbrains_mono.render(f"You died! Your score was {snake_length - 3}.", True, (255, 255, 255))
+        dead_width, dead_height = dead_text.get_size()
+        screen.blit(dead_text, (960 - (dead_width // 2), 460 - (dead_height // 2)))
+    title_width, title_height = title_instructions_text.get_size()
+    screen.blit(title_instructions_text, (960 - (title_width // 2), 540 - (title_height // 2)))
+    pygame.display.update()
+    sleep(0.5)
+    while True:
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_ESCAPE]:
+            return False
+        elif 1 in keys:
+            return True
+        pygame.event.pump()
+
 # initialize screen space and sprites
 screen = pygame.display.set_mode((1920, 1080), pygame.FULLSCREEN)
 jetbrains_mono = pygame.font.Font("JetBrainsMono-Regular.ttf", 45)
@@ -139,21 +156,11 @@ snake_body = pygame.image.load("snake.png").convert()
 snake_head = pygame.image.load("snake_head.png").convert()
 apple_s = pygame.image.load("apple.png").convert()
 
-frame_count = 0
-title_width, title_height = title_instructions_text.get_size()
-screen.blit(title_instructions_text, (960 - (title_width // 2), 540 - (title_height // 2)))
-while True:
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_ESCAPE]:
-        exit()
-    elif 1 in keys:
-        break
-    pygame.event.pump()
-    pygame.display.update()
+death_screen(True)
 
 # main game loop
+frame_count = 1
 while True:
-    frame_count += 1
     keys = pygame.key.get_pressed() # change direction based on keyboard input
     if keys[pygame.K_w] and curr_dir != "South":
         head_dir = "North"
@@ -167,7 +174,20 @@ while True:
     high_score_text = jetbrains_mono.render("High Score: " + str(high_score), True, (255, 255, 255))
     if frame_count % move_frame == 0: # move snake every move_frame frames
         prev_snake = snake.copy()
-        move(head_dir)
+        if not move(head_dir):
+            high_score = max(snake_length - 3, high_score)
+            if death_screen(False):
+                snake_length = 3
+                snake = [[7, 7], [6, 7], [5, 7]]
+                prev_snake = [[6, 7], [5, 7], [4, 7]]
+                head_dir = "East"
+                curr_dir = "East"
+                apple_location = [13, 7]
+                continue
+            else:
+                sys.stdout = open("High Score.txt", 'w')
+                print(high_score)
+                break
         curr_dir = head_dir
     screen.fill((0, 0, 0))
     curr_board_s = draw(frame_count, curr_dir)
@@ -178,4 +198,7 @@ while True:
     pygame.event.pump()
     pygame.display.update()
     if frame_count == framerate: # reset frame count once it reaches 120
-        frame_count = 0
+        frame_count = 1
+    else:
+        frame_count += 1
+    
