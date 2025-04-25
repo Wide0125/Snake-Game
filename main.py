@@ -147,7 +147,6 @@ apple_s = pygame.image.load("apple.png").convert()
 
 def death_screen():
     while True:
-        
         if keys[pygame.K_ESCAPE]:
             death()
         elif 1 in keys:
