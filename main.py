@@ -174,8 +174,8 @@ while True:
     high_score_text = jetbrains_mono.render("High Score: " + str(high_score), True, (255, 255, 255))
     if frame_count % move_frame == 0: # move snake every move_frame frames
         prev_snake = snake.copy()
+        high_score = max(snake_length - 3, high_score)
         if not move(head_dir):
-            high_score = max(snake_length - 3, high_score)
             if death_screen(False):
                 snake_length = 3
                 snake = [[7, 7], [6, 7], [5, 7]]
