@@ -29,6 +29,7 @@ def apple(snake):
 def eat(snake):
     global snake_length
     global apple_location
+    global score
     snake_length += 1
     x = snake[-1][0] + (snake[-1][0] - snake[-2][0]) # set x coordinate of the additional body
     y = snake[-1][1] + (snake[-1][1] - snake[-2][1]) # set y coordinate of the additional body
@@ -58,6 +59,7 @@ def eat(snake):
             x -= 1
     snake.append([x, y])
     apple_location = apple(snake) # place new apple
+    score = jetbrains_mono.render("Score: " + str(snake_length - 3), True, (255, 255, 255))
 
 # move snake towards its current direction
 def move(dir):
@@ -185,9 +187,8 @@ while True:
                 sys.stdout = open("High Score.txt", 'w')
                 print(high_score)
                 break
-        score = jetbrains_mono.render("Score: " + str(snake_length - 3), True, (255, 255, 255))
-        high_score_text = jetbrains_mono.render("High Score: " + str(high_score), True, (255, 255, 255))
         curr_dir = head_dir
+        high_score_text = jetbrains_mono.render("High Score: " + str(high_score), True, (255, 255, 255))
     screen.fill((0, 0, 0))
     curr_board_s = draw(frame_count, curr_dir)
     screen.blit(curr_board_s, (384, 0)) # draw board, score, and high score onto screen
