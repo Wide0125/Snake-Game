@@ -143,7 +143,7 @@ def death_screen(title):
         pygame.event.pump()
 
 # initialize screen space and sprites
-screen = pygame.display.set_mode((1920, 1080), pygame.FULLSCREEN)
+screen = pygame.display.set_mode((1920, 1080))
 jetbrains_mono = pygame.font.Font("JetBrainsMono-Regular.ttf", 45)
 title_instructions_text = jetbrains_mono.render("Press any key to start playing (or esc to exit).", True, (255, 255, 255))
 clock = pygame.time.Clock()
