@@ -11,19 +11,21 @@ snake = [[7, 7], [6, 7], [5, 7]] # location of snake starting from head
 prev_snake = [[6, 7], [5, 7], [4, 7]] # location of snake during previous move frame
 head_dir = "East" # direction to change snake head to at the next possible move frame
 curr_dir = "East" # actual direction of snake head at any given moment
+grid_rows = 14
+grid_columns = 15
 apple_location = [13, 7] # initialize apple
 high_score = int(input())
 framerate = 144
 move_frame = 18 # set to move every nth frame (must be set to common divisor of frame_rate and move_distance)
 move_distance = 72 // move_frame # distance to move every frame
 
-# apple on random location that isn't part of snake
+# place apple on random location that isn't part of snake
 def place_apple(snake):
     global apple_location
-    apple = [randint(0, 15), randint(0, 14)]
+    apple = [randint(0, grid_columns), randint(0, grid_rows)]
     while apple in snake:
-        apple[0] = randint(0, 15)
-        apple[1] = randint(0, 14)
+        apple[0] = randint(0, grid_columns)
+        apple[1] = randint(0, grid_rows)
     apple_location = apple
 
 # take in snake as parameter and add 1 length to its tail
@@ -33,7 +35,7 @@ def eat(snake):
     snake_length += 1
     x = snake[-1][0] + (snake[-1][0] - snake[-2][0]) # set x coordinate of the additional body
     y = snake[-1][1] + (snake[-1][1] - snake[-2][1]) # set y coordinate of the additional body
-    if x > 15: # logic to place body somewhere else if position of additional body points to out of grid
+    if x > grid_columns: # logic to place body somewhere else if position of additional body points to out of grid
         x -= 1
         if y == 0:
             y += 1
@@ -45,7 +47,7 @@ def eat(snake):
             y += 1
         else:
             y -= 1
-    elif y > 14:
+    elif y > grid_rows:
         y -= 1
         if x == 0:
             x += 1
@@ -59,7 +61,6 @@ def eat(snake):
             x -= 1
     snake.append([x, y])
     place_apple(snake) # return new apple
-    score_text = jetbrains_mono.render("Score: " + str(snake_length - 3), True, (255, 255, 255)) # update score_text surface
 
 # move snake towards its current direction
 def move(dir):
@@ -69,11 +70,11 @@ def move(dir):
             return False
     if dir == "South":
         move_to = [snake[0][0], snake[0][1] + 1]
-        if move_to[1] > 14:
+        if move_to[1] > grid_rows:
             return False
     if dir == "East":
         move_to = [snake[0][0] + 1, snake[0][1]]
-        if move_to[0] > 15:
+        if move_to[0] > grid_columns:
             return False
     if dir == "West":
         move_to = [snake[0][0] - 1, snake[0][1]]
@@ -149,8 +150,8 @@ title_instructions_text = jetbrains_mono.render("Press any key to start playing 
 clock = pygame.time.Clock()
 cell = pygame.image.load("cell.png").convert()
 grid_s = pygame.Surface((1152, 1080))
-for x in range(15):
-        for y in range(14):
+for x in range(grid_columns + 1):
+        for y in range(grid_rows + 1):
             grid_s.blit(cell, (x * 72, y * 72))
 snake_body = pygame.image.load("snake.png").convert()
 snake_head = pygame.image.load("snake_head.png").convert()
