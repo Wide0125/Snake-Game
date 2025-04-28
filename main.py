@@ -20,10 +20,10 @@ move_distance = 72 // move_frame # distance to move every frame
 # apple on random location that isn't part of snake
 def place_apple(snake):
     global apple_location
-    apple = []
+    apple = [None, None]
     while apple in snake:
-        apple.append() = randint(0, 15)
-        apple.append() = randint(0, 14)
+        apple[0] = randint(0, 15)
+        apple[1] = randint(0, 14)
     apple_location = apple
 
 # take in snake as parameter and add 1 length to its tail
