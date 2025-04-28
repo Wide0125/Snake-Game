@@ -18,7 +18,7 @@ move_frame = 18 # set to move every nth frame (must be set to common divisor of 
 move_distance = 72 // move_frame # distance to move every frame
 
 # place apple on random location that isn't part of snake
-def apple(snake):
+def place_apple(snake):
     apple = snake[0].copy()
     while apple in snake:
         apple[0] = randint(0, 15)
@@ -27,7 +27,6 @@ def apple(snake):
 
 # take in snake as parameter and add 1 length to its tail
 def eat(snake):
-    global snake_length
     global apple_location
     global score_text
     snake_length += 1
@@ -58,8 +57,8 @@ def eat(snake):
         else:
             x -= 1
     snake.append([x, y])
-    apple_location = apple(snake) # place new apple
-    score_text = jetbrains_mono.render("Score: " + str(snake_length - 3), True, (255, 255, 255))
+    apple_location = place_apple(snake) # place new apple
+    score_text = jetbrains_mono.render("Score: " + str(snake_length - 3), True, (255, 255, 255)) # update score_text surface
 
 # move snake towards its current direction
 def move(dir):
