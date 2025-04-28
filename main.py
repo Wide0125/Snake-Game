@@ -130,7 +130,6 @@ def draw(frame, dir): # draw board, snake, and apple onto pygame surface object 
 
 def death_screen(title):
     if not title:
-        dead_text = jetbrains_mono.render(f"You died! Your score was {snake_length - 3}.", True, (255, 255, 255))
         dead_width, dead_height = dead_text.get_size()
         screen.blit(dead_text, (960 - (dead_width // 2), 460 - (dead_height // 2)))
     title_width, title_height = title_instructions_text.get_size()
@@ -146,9 +145,15 @@ def death_screen(title):
 
 # initialize screen space and sprites
 screen = pygame.display.set_mode((1920, 1080), pygame.FULLSCREEN)
+
 jetbrains_mono = pygame.font.Font("JetBrainsMono-Regular.ttf", 45)
 title_instructions_text = jetbrains_mono.render("Press any key to start playing (or esc to exit).", True, (255, 255, 255))
+dead_text = jetbrains_mono.render(f"You died! Your score was {snake_length - 3}.", True, (255, 255, 255))
+score_text = jetbrains_mono.render("Score: " + str(snake_length - 3), True, (255, 255, 255))
+high_score_text = jetbrains_mono.render("High Score: " + str(high_score), True, (255, 255, 255))
+
 clock = pygame.time.Clock()
+
 cell = pygame.image.load("cell.png").convert()
 grid_s = pygame.Surface((1152, 1080))
 for x in range(grid_columns + 1):
@@ -157,8 +162,7 @@ for x in range(grid_columns + 1):
 snake_body = pygame.image.load("snake.png").convert()
 snake_head = pygame.image.load("snake_head.png").convert()
 apple_s = pygame.image.load("apple.png").convert()
-score_text = jetbrains_mono.render("Score: " + str(snake_length - 3), True, (255, 255, 255))
-high_score_text = jetbrains_mono.render("High Score: " + str(high_score), True, (255, 255, 255))
+
 
 death_screen(True)
 
@@ -198,11 +202,11 @@ while True:
     screen.blit(curr_board_s, (384, 0)) # draw board, score, and high score onto screen
     screen.blit(score_text, (0, 0))
     screen.blit(high_score_text, (0, 50))
-    clock.tick(framerate) # pause loop for a certain amount of time to maintain framerate
     pygame.event.pump()
     pygame.display.update()
     if frame_count == framerate: # reset frame count once it reaches framerate
         frame_count = 1
     else:
         frame_count += 1
+    clock.tick(framerate) # pause loop for a certain amount of time to maintain framerate
     
