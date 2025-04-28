@@ -20,7 +20,7 @@ move_distance = 72 // move_frame # distance to move every frame
 # apple on random location that isn't part of snake
 def place_apple(snake):
     global apple_location
-    apple = [None, None]
+    apple = [randint(0, 15), randint(0, 14)]
     while apple in snake:
         apple[0] = randint(0, 15)
         apple[1] = randint(0, 14)
@@ -143,14 +143,14 @@ def death_screen(title):
         pygame.event.pump()
 
 # initialize screen space and sprites
-screen = pygame.display.set_mode((1920, 1080))
+screen = pygame.display.set_mode((1920, 1080), pygame.FULLSCREEN)
 jetbrains_mono = pygame.font.Font("JetBrainsMono-Regular.ttf", 45)
 title_instructions_text = jetbrains_mono.render("Press any key to start playing (or esc to exit).", True, (255, 255, 255))
 clock = pygame.time.Clock()
 cell = pygame.image.load("cell.png").convert()
 grid_s = pygame.Surface((1152, 1080))
-for x in range(1080 // 15):
-        for y in range(1080 // 14):
+for x in range(15):
+        for y in range(14):
             grid_s.blit(cell, (x * 72, y * 72))
 snake_body = pygame.image.load("snake.png").convert()
 snake_head = pygame.image.load("snake_head.png").convert()
