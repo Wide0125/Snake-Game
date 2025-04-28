@@ -17,17 +17,18 @@ framerate = 144
 move_frame = 18 # set to move every nth frame (must be set to common divisor of frame_rate and move_distance)
 move_distance = 72 // move_frame # distance to move every frame
 
-# place apple on random location that isn't part of snake
+# apple on random location that isn't part of snake
 def place_apple(snake):
-    apple = snake[0].copy()
+    global apple_location
+    apple = []
     while apple in snake:
-        apple[0] = randint(0, 15)
-        apple[1] = randint(0, 14)
-    return apple
+        apple.append() = randint(0, 15)
+        apple.append() = randint(0, 14)
+    apple_location = apple
 
 # take in snake as parameter and add 1 length to its tail
 def eat(snake):
-    global apple_location
+    global snake_length
     global score_text
     snake_length += 1
     x = snake[-1][0] + (snake[-1][0] - snake[-2][0]) # set x coordinate of the additional body
@@ -57,7 +58,7 @@ def eat(snake):
         else:
             x -= 1
     snake.append([x, y])
-    apple_location = place_apple(snake) # place new apple
+    place_apple(snake) # return new apple
     score_text = jetbrains_mono.render("Score: " + str(snake_length - 3), True, (255, 255, 255)) # update score_text surface
 
 # move snake towards its current direction
@@ -85,7 +86,7 @@ def move(dir):
         snake[i] = move_to
         move_to = temp
     if snake[0] == apple_location: # check for apple eaten
-        eat(snake)
+        eat(snake) # place new apple
     return True
 
 
@@ -149,7 +150,7 @@ clock = pygame.time.Clock()
 cell = pygame.image.load("cell.png").convert()
 grid_s = pygame.Surface((1152, 1080))
 for x in range(1080 // 15):
-        for y in range(1080 // 15):
+        for y in range(1080 // 14):
             grid_s.blit(cell, (x * 72, y * 72))
 snake_body = pygame.image.load("snake.png").convert()
 snake_head = pygame.image.load("snake_head.png").convert()
