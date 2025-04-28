@@ -29,7 +29,7 @@ def apple(snake):
 def eat(snake):
     global snake_length
     global apple_location
-    global score
+    global score_text
     snake_length += 1
     x = snake[-1][0] + (snake[-1][0] - snake[-2][0]) # set x coordinate of the additional body
     y = snake[-1][1] + (snake[-1][1] - snake[-2][1]) # set y coordinate of the additional body
@@ -59,7 +59,7 @@ def eat(snake):
             x -= 1
     snake.append([x, y])
     apple_location = apple(snake) # place new apple
-    score = jetbrains_mono.render("Score: " + str(snake_length - 3), True, (255, 255, 255))
+    score_text = jetbrains_mono.render("Score: " + str(snake_length - 3), True, (255, 255, 255))
 
 # move snake towards its current direction
 def move(dir):
@@ -143,7 +143,7 @@ def death_screen(title):
         pygame.event.pump()
 
 # initialize screen space and sprites
-screen = pygame.display.set_mode((1920, 1080))
+screen = pygame.display.set_mode((1920, 1080), pygame.FULLSCREEN)
 jetbrains_mono = pygame.font.Font("JetBrainsMono-Regular.ttf", 45)
 title_instructions_text = jetbrains_mono.render("Press any key to start playing (or esc to exit).", True, (255, 255, 255))
 clock = pygame.time.Clock()
@@ -155,6 +155,8 @@ for x in range(1080 // 15):
 snake_body = pygame.image.load("snake.png").convert()
 snake_head = pygame.image.load("snake_head.png").convert()
 apple_s = pygame.image.load("apple.png").convert()
+score_text = jetbrains_mono.render("Score: " + str(snake_length - 3), True, (255, 255, 255))
+high_score_text = jetbrains_mono.render("High Score: " + str(high_score), True, (255, 255, 255))
 
 death_screen(True)
 
@@ -192,7 +194,7 @@ while True:
     screen.fill((0, 0, 0))
     curr_board_s = draw(frame_count, curr_dir)
     screen.blit(curr_board_s, (384, 0)) # draw board, score, and high score onto screen
-    screen.blit(score, (0, 0))
+    screen.blit(score_text, (0, 0))
     screen.blit(high_score_text, (0, 50))
     clock.tick(framerate) # pause loop for a certain amount of time to maintain framerate
     pygame.event.pump()
