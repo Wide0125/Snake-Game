@@ -209,4 +209,3 @@ while True:
     else:
         frame_count += 1
     clock.tick(framerate) # pause loop for a certain amount of time to maintain framerate
-    
