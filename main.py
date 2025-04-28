@@ -175,7 +175,7 @@ while True:
     if frame_count % move_frame == 0: # move snake every move_frame frames
         prev_snake = snake.copy()
         high_score = max(snake_length - 3, high_score)
-        if not move(head_dir):
+        if not move(head_dir): # move snake, activate death screen if snake is dead
             if death_screen(False):
                 snake_length = 3
                 snake = [[7, 7], [6, 7], [5, 7]]
