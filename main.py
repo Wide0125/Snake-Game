@@ -1,6 +1,5 @@
 import pygame # pygame library (https://www.pygame.org/)
 pygame.init() # initialize pygame
-from time import sleep
 from random import randint # for placement of apple
 import sys
 
@@ -133,7 +132,6 @@ def death_screen(title):
     title_width, title_height = title_instructions_text.get_size()
     screen.blit(title_instructions_text, (960 - (title_width // 2), 540 - (title_height // 2)))
     pygame.display.update()
-    sleep(0.5)
     while True:
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
@@ -170,24 +168,25 @@ while True:
         head_dir = "East"
     if keys[pygame.K_s] and curr_dir != "North":
         head_dir = "South"
-    score = jetbrains_mono.render("Score: " + str(snake_length - 3), True, (255, 255, 255))
-    high_score_text = jetbrains_mono.render("High Score: " + str(high_score), True, (255, 255, 255))
     if frame_count % move_frame == 0: # move snake every move_frame frames
         prev_snake = snake.copy()
         high_score = max(snake_length - 3, high_score)
         if not move(head_dir): # move snake, activate death screen if snake is dead
-            if death_screen(False):
+            if death_screen(False): # reset variables and continue loop
                 snake_length = 3
                 snake = [[7, 7], [6, 7], [5, 7]]
                 prev_snake = [[6, 7], [5, 7], [4, 7]]
                 head_dir = "East"
                 curr_dir = "East"
                 apple_location = [13, 7]
+                frame_count = 1
                 continue
-            else:
+            else: # save high score to file and break out of game loop
                 sys.stdout = open("High Score.txt", 'w')
                 print(high_score)
                 break
+        score = jetbrains_mono.render("Score: " + str(snake_length - 3), True, (255, 255, 255))
+        high_score_text = jetbrains_mono.render("High Score: " + str(high_score), True, (255, 255, 255))
         curr_dir = head_dir
     screen.fill((0, 0, 0))
     curr_board_s = draw(frame_count, curr_dir)
@@ -197,7 +196,7 @@ while True:
     clock.tick(framerate) # pause loop for a certain amount of time to maintain framerate
     pygame.event.pump()
     pygame.display.update()
-    if frame_count == framerate: # reset frame count once it reaches 120
+    if frame_count == framerate: # reset frame count once it reaches framerate
         frame_count = 1
     else:
         frame_count += 1
