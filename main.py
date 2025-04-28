@@ -81,9 +81,9 @@ def move(dir):
         move_to = [snake[0][0] - 1, snake[0][1]]
         if move_to[0] < 0:
             return False
+    if move_to in snake: # check for body collision
+        return False
     for i in range(len(snake)): # make rest of body follow head movement
-        if move_to in snake: # check for body collision
-            return False
         temp = snake[i]
         snake[i] = move_to
         move_to = temp
