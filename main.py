@@ -33,6 +33,7 @@ def eat(snake):
     global snake_length
     global score_text
     snake_length += 1
+    score_text = jetbrains_mono.render("Score: " + str(snake_length - 3), True, (255, 255, 255)) # update score_text surface
     x = snake[-1][0] + (snake[-1][0] - snake[-2][0]) # set x coordinate of the additional body
     y = snake[-1][1] + (snake[-1][1] - snake[-2][1]) # set y coordinate of the additional body
     if x > grid_columns: # logic to place body somewhere else if position of additional body points to out of grid
