@@ -1,4 +1,4 @@
-import pygame # pygame library (https://www.pygame.org/)
+import pygame # This code was made freely available by [https://www.pygame.org]
 pygame.init() # initialize pygame
 from random import randint # for placement of apple
 import sys
