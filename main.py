@@ -130,6 +130,7 @@ def draw(frame, dir): # draw board, snake, and apple onto pygame surface object 
 
 def death_screen(title):
     if not title:
+        dead_text = jetbrains_mono.render(f"You died! Your score was {snake_length - 3}.", True, (255, 255, 255))
         dead_width, dead_height = dead_text.get_size()
         screen.blit(dead_text, (960 - (dead_width // 2), 460 - (dead_height // 2)))
     title_width, title_height = title_instructions_text.get_size()
@@ -148,7 +149,6 @@ screen = pygame.display.set_mode((1920, 1080), pygame.FULLSCREEN)
 
 jetbrains_mono = pygame.font.Font("JetBrainsMono-Regular.ttf", 45)
 title_instructions_text = jetbrains_mono.render("Press any key to start playing (or esc to exit).", True, (255, 255, 255))
-dead_text = jetbrains_mono.render(f"You died! Your score was {snake_length - 3}.", True, (255, 255, 255))
 score_text = jetbrains_mono.render("Score: " + str(snake_length - 3), True, (255, 255, 255))
 high_score_text = jetbrains_mono.render("High Score: " + str(high_score), True, (255, 255, 255))
 
