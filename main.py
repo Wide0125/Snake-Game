@@ -164,48 +164,47 @@ snake_head = pygame.image.load("snake_head.png").convert()
 apple_s = pygame.image.load("apple.png").convert()
 
 
-death_screen(True)
-
-# main game loop
-frame_count = 1
-while True:
-    keys = pygame.key.get_pressed() # change direction based on keyboard input
-    if keys[pygame.K_w] and curr_dir != "South":
-        head_dir = "North"
-    if keys[pygame.K_a] and curr_dir != "East":
-        head_dir = "West"
-    if keys[pygame.K_d] and curr_dir != "West":
-        head_dir = "East"
-    if keys[pygame.K_s] and curr_dir != "North":
-        head_dir = "South"
-    if frame_count % move_frame == 0: # move snake every move_frame frames
-        prev_snake = snake.copy()
-        high_score = max(snake_length - 3, high_score)
-        if not move(head_dir): # move snake, activate death screen if snake is dead
-            if death_screen(False): # reset variables and continue loop
-                snake_length = 3
-                snake = [[7, 7], [6, 7], [5, 7]]
-                prev_snake = [[6, 7], [5, 7], [4, 7]]
-                head_dir = "East"
-                curr_dir = "East"
-                apple_location = [13, 7]
-                frame_count = 1
-                continue
-            else: # save high score to file and break out of game loop
-                sys.stdout = open("High Score.txt", 'w')
-                print(high_score)
-                break
-        curr_dir = head_dir
-        high_score_text = jetbrains_mono.render("High Score: " + str(high_score), True, (255, 255, 255))
-    screen.fill((0, 0, 0))
-    curr_board_s = draw(frame_count, curr_dir)
-    screen.blit(curr_board_s, (384, 0)) # draw board, score, and high score onto screen
-    screen.blit(score_text, (0, 0))
-    screen.blit(high_score_text, (0, 50))
-    pygame.event.pump()
-    pygame.display.update()
-    if frame_count == framerate: # reset frame count once it reaches framerate
-        frame_count = 1
-    else:
-        frame_count += 1
-    clock.tick(framerate) # pause loop for a certain amount of time to maintain framerate
+if not death_screen(True):
+    # main game loop
+    frame_count = 1
+    while True:
+        keys = pygame.key.get_pressed() # change direction based on keyboard input
+        if keys[pygame.K_w] and curr_dir != "South":
+            head_dir = "North"
+        if keys[pygame.K_a] and curr_dir != "East":
+            head_dir = "West"
+        if keys[pygame.K_d] and curr_dir != "West":
+            head_dir = "East"
+        if keys[pygame.K_s] and curr_dir != "North":
+            head_dir = "South"
+        if frame_count % move_frame == 0: # move snake every move_frame frames
+            prev_snake = snake.copy()
+            high_score = max(snake_length - 3, high_score)
+            if not move(head_dir): # move snake, activate death screen if snake is dead
+                if death_screen(False): # reset variables and continue loop
+                    snake_length = 3
+                    snake = [[7, 7], [6, 7], [5, 7]]
+                    prev_snake = [[6, 7], [5, 7], [4, 7]]
+                    head_dir = "East"
+                    curr_dir = "East"
+                    apple_location = [13, 7]
+                    frame_count = 1
+                    continue
+                else: # save high score to file and break out of game loop
+                    sys.stdout = open("High Score.txt", 'w')
+                    print(high_score)
+                    break
+            curr_dir = head_dir
+            high_score_text = jetbrains_mono.render("High Score: " + str(high_score), True, (255, 255, 255))
+        screen.fill((0, 0, 0))
+        curr_board_s = draw(frame_count, curr_dir)
+        screen.blit(curr_board_s, (384, 0)) # draw board, score, and high score onto screen
+        screen.blit(score_text, (0, 0))
+        screen.blit(high_score_text, (0, 50))
+        pygame.event.pump()
+        pygame.display.update()
+        if frame_count == framerate: # reset frame count once it reaches framerate
+            frame_count = 1
+        else:
+            frame_count += 1
+        clock.tick(framerate) # pause loop for a certain amount of time to maintain framerate
