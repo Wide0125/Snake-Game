@@ -164,7 +164,7 @@ snake_head = pygame.image.load("snake_head.png").convert()
 apple_s = pygame.image.load("apple.png").convert()
 
 
-if not death_screen(True):
+if death_screen(True):
     # main game loop
     frame_count = 1
     while True:
