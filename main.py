@@ -6,9 +6,9 @@ import sys
 sys.stdin = open("High Score.txt", "r") # access high score saved to file
 
 # initialize variables and grid
-snake_length = 3
-snake = [[7, 7], [6, 7], [5, 7]] # location of snake starting from head
-prev_snake = [[6, 7], [5, 7], [4, 7]] # location of snake during previous move frame
+snake_length = 9
+snake = [[7, 7], [6, 7], [5, 7], [4, 7], [3, 7], [2,7], [1, 7], [0, 7], [-1, 7]] # location of snake starting from head
+prev_snake = [[6, 7], [5, 7], [4, 7], [3, 7], [2,7], [1, 7], [0, 7], [-1, 7], [-2, 7]] # location of snake during previous move frame
 head_dir = "East" # direction to change snake head to at the next possible move frame
 curr_dir = "East" # actual direction of snake head at any given moment
 grid_rows = 14
@@ -16,7 +16,7 @@ grid_columns = 15
 apple_location = [13, 7] # initialize apple
 high_score = int(input())
 framerate = 144
-move_frame = 18 # set to move every nth frame (must be set to common divisor of frame_rate and move_distance)
+move_frame = 36 # set to move every nth frame (must be set to common divisor of frame_rate and move_distance)
 move_distance = 72 // move_frame # distance to move every frame
 
 # place apple on random location that isn't part of snake
